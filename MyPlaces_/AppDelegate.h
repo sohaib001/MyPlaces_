@@ -7,9 +7,11 @@
 //
 
 #import <UIKit/UIKit.h>
-
+@class MapViewController;
 @interface AppDelegate : UIResponder <UIApplicationDelegate>
 
 @property (strong, nonatomic) UIWindow *window;
+@property (strong, nonatomic) UINavigationController *navigationController;
+@property (strong, nonatomic) MapViewController *mapViewController;
 
 @end

@@ -7,17 +7,28 @@
 //
 
 #import "AppDelegate.h"
-
+#import "MapViewController.h"
 @implementation AppDelegate
 
 @synthesize window = _window;
-
+@synthesize navigationController = _navigationController;
+@synthesize mapViewController = _mapViewController;
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
     self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
     // Override point for customization after application launch.
+    self.mapViewController = [[MapViewController alloc] init ];
+    
+    MapViewController *controller = [MapViewController new];
+    
+    self.navigationController = [[UINavigationController alloc] initWithRootViewController:controller];
+    
+    self.window.rootViewController = self.navigationController;
+    
     self.window.backgroundColor = [UIColor whiteColor];
+    
     [self.window makeKeyAndVisible];
+    
     return YES;
 }
 
