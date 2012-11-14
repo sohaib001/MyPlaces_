@@ -116,9 +116,12 @@
     customPinView.animatesDrop = YES;
     customPinView.canShowCallout = YES;
     
-//#error see calloutview tapped
-    
-    customPinView.rightCalloutAccessoryView = [UIButton buttonWithType:UIButtonTypeDetailDisclosure];
+
+    UIButton* rightButton = [UIButton buttonWithType:UIButtonTypeDetailDisclosure];
+    [rightButton addTarget:self
+                    action:@selector(addDetails:)
+          forControlEvents:UIControlEventTouchUpInside];
+    customPinView.rightCalloutAccessoryView = rightButton;
     
     return  customPinView;
 }

@@ -25,7 +25,7 @@
     NSString *documentDirectory = [paths objectAtIndex:0];
     self.plistLocation = [documentDirectory stringByAppendingPathComponent:pListName];
     
-    self.plistLocation = [[NSBundle mainBundle] pathForResource:@"Details" ofType:@"plist"];;
+   // self.plistLocation = [[NSBundle mainBundle] pathForResource:@"Details" ofType:@"plist"];;
     //checking to see of the file already exist
     if(![self.fileManager fileExistsAtPath:self.plistLocation])
     {
@@ -35,7 +35,7 @@
 //        [[NSBundle mainBundle] pathForResource:@"Details" ofType:@"plist"];
         
         //copy the file from bundle to document directory
-      //  [self.fileManager copyItemAtPath:correctPath toPath:self.plistLocation error:&err];      
+        [self.fileManager copyItemAtPath:correctPath toPath:self.plistLocation error:&err];      
     }
     
     
