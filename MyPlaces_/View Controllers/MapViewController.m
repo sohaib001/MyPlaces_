@@ -6,16 +6,21 @@
 //  Copyright (c) 2012 __MyCompanyName__. All rights reserved.
 //
 
+
 #import "MapViewController.h"
-#import "AddDetailsViewController.h"
+#import "DetailsViewController.h"
 #import "DefaultAnnotation.h"
+
+@interface MapViewController() 
+
+- (void)addAnnotationButton;    
+- (void)addDetails;
+
+@end
 
 @implementation MapViewController
 
 @synthesize mapView = _mapView;
-@synthesize addDetailsViewController = _addDetailsViewController;
-@synthesize tapRecognizer = _tapRecognizer;
-@synthesize tappedCoordinate = _tappedCoordinate;
 @synthesize placeInfo = _placeInfo;
 
 
@@ -42,30 +47,32 @@
 {
     [super viewDidLoad];
     // Do any additional setup after loading the view from its nib.
-    [self.tapRecognizer addTarget:self action:@selector(mapTapped:)];
-    
+    [self addAnnotationButton];
 }
+
 
 - (void)viewDidUnload
 {
     [self setPlaceInfo:nil];
-    [self setTapRecognizer:nil];
     [self setMapView:nil];
     [super viewDidUnload];
     // Release any retained subviews of the main view.
     // e.g. self.myOutlet = nil;
 }
-
 - (void)viewDidAppear:(BOOL)animated
 {
     [super viewDidAppear:animated];
     self.placeInfo = [[PlaceInfo alloc] init];
+    self.mapView.showsUserLocation = YES;  
+    
 }
 - (void)dealloc
 {
-    
-    [self setAddDetailsViewController:nil];
+    [self setPlaceInfo:nil];
+   
 }
+
+
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation
 {
     // Return YES for supported orientations
@@ -73,70 +80,91 @@
 }
 
 
-#pragma mark - MapViewController
-
--(void)mapTapped:(UITapGestureRecognizer *)tapRecognizer
+- (void)addAnnotationButton
 {
-    CGPoint location=[tapRecognizer locationInView:self.mapView];
+    self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAdd target:self action:@selector(addDefaultAnnotation)];
+    self.navigationItem.rightBarButtonItem.enabled = YES;
     
-    self.tappedCoordinate = [self.mapView convertPoint:location toCoordinateFromView:self.mapView];
+}
+
+- (void)addDefaultAnnotation{
+ 
+    self.navigationItem.rightBarButtonItem.enabled =NO;
     
-    self.placeInfo.Coordinate = self.tappedCoordinate;
+    CLLocationCoordinate2D currentLocationCoordinates;
+    
+    currentLocationCoordinates = [[self.mapView userLocation]  coordinate];
+    
+    self.placeInfo.Coordinate = currentLocationCoordinates;
     
     DefaultAnnotation *annotation = [[DefaultAnnotation alloc] init];
-    
-    [annotation setCoordinates:self.tappedCoordinate];
-    
-   [self.mapView removeAnnotation:[self.mapView.annotations lastObject]];
-    
+    [annotation setCoordinates:currentLocationCoordinates];
     [self.mapView addAnnotation:annotation];
     
 }
 
-- (void)addDetails:(id)sender
-{
-    self.addDetailsViewController = [[AddDetailsViewController alloc] init];
-    self.addDetailsViewController.placeInfo = self.placeInfo;
-    
+#pragma mark - MapViewController
 
-    [self.navigationController pushViewController:self.addDetailsViewController animated:YES];;
+- (void)addDetails
+{
+    DetailsViewController *detailsViewController = [[DetailsViewController alloc] init];
+    
+    detailsViewController.placeInfo = self.placeInfo;
+    
+    [self.navigationController pushViewController:detailsViewController animated:YES];;
 }
 
 #pragma mark - MKMapViewDelegate
 
+- (void)mapView:(MKMapView *)mapView annotationView:(MKAnnotationView *)view didChangeDragState:(MKAnnotationViewDragState)newState fromOldState:(MKAnnotationViewDragState)oldState
+{
+    if (newState == MKAnnotationViewDragStateEnding)
+    {
+        CGPoint dropPoint = CGPointMake(view.center.x, view.center.y);
+        
+        CLLocationCoordinate2D newCoordinate = [self.mapView 
+                                                convertPoint:dropPoint 
+                                                toCoordinateFromView:view.superview];
+        
+        self.placeInfo.Coordinate = newCoordinate;
+        
+        [view.annotation setCoordinate:newCoordinate];
+        
+        
+    }    
+}
+
 
 - (MKAnnotationView *)mapView:(MKMapView *)mapView viewForAnnotation:(id <MKAnnotation>)annotation{
+   
     
     if ([annotation isKindOfClass:[MKUserLocation class]])
+    {
+        
         return nil;
+    } 
     
-    MKPinAnnotationView* customPinView = [[MKPinAnnotationView alloc]
-                                          initWithAnnotation:annotation reuseIdentifier:nil] ;
-    customPinView.pinColor = MKPinAnnotationColorPurple; 
-    customPinView.animatesDrop = YES;
-    customPinView.canShowCallout = YES;
-    
-
-    UIButton* rightButton = [UIButton buttonWithType:UIButtonTypeDetailDisclosure];
-    [rightButton addTarget:self
-                    action:@selector(addDetails:)
-          forControlEvents:UIControlEventTouchUpInside];
-    customPinView.rightCalloutAccessoryView = rightButton;
-    
+       
+    static NSString *reuseId = @"pin";
+    MKPinAnnotationView *customPinView = (MKPinAnnotationView *)[mapView dequeueReusableAnnotationViewWithIdentifier:reuseId];
+    if (customPinView == nil)
+    {
+        customPinView = [[MKPinAnnotationView alloc] initWithAnnotation:annotation reuseIdentifier:reuseId];
+        customPinView.draggable = YES;
+        customPinView.canShowCallout = YES;
+    }
+    else
+    {
+        customPinView.annotation = annotation;
+    }
+   
+    customPinView.rightCalloutAccessoryView = [UIButton buttonWithType:UIButtonTypeDetailDisclosure];
+      
     return  customPinView;
 }
--(void)removeAllAnnotations
-{
-    //Get the current user location annotation.
-    id userAnnotation=self.mapView.userLocation;
+- (void)mapView:(MKMapView *)mapView annotationView:(MKAnnotationView *)view calloutAccessoryControlTapped:(UIControl *)control{
     
-    //Remove all added annotations
-    [self.mapView removeAnnotations:self.mapView.annotations]; 
-    
-    // Add the current user location annotation again.
-    if(userAnnotation!=nil)
-        [self.mapView addAnnotation:userAnnotation];
+    [self addDetails];
 }
-
 
 @end

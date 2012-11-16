@@ -13,13 +13,18 @@
 #import "SaveDetails.h"
 #import "PlaceInfo.h"
 
-@interface AddDetailsViewController : UIViewController <UITableViewDataSource, UITableViewDelegate, CategoryDelegate,UITextFieldDelegate,UITextViewDelegate>
+@interface DetailsViewController : UIViewController <UITableViewDataSource, UITableViewDelegate, CategoryDelegate,UITextFieldDelegate,UITextViewDelegate>
 
 @property (strong, nonatomic) PlaceInfo *placeInfo;
 @property (strong, nonatomic) UITextField *placeNameTextField; 
 @property (strong, nonatomic) UITextView *commentTexView;
 @property (strong, nonatomic) NSString *category;
-@property (strong, nonatomic) IBOutlet UITableView *addDetailsTableView;
-@property (strong, nonatomic) SaveDetails * saveDetails; 
+
+
+@property (strong, nonatomic) IBOutlet UITableView *detailsTableView;
+
+@property (strong, nonatomic) IBOutlet InputCell *placeNameTableViewCell;
+
+@property (strong, nonatomic) IBOutlet MultiLineInputCell *commentTableViewCell;
 
 @end

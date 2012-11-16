@@ -13,5 +13,5 @@
 @interface DefaultAnnotation : NSObject <MKAnnotation>
 
 @property CLLocationCoordinate2D coordinates;
-
+- (void)setCoordinate:(CLLocationCoordinate2D)newCoordinate;
 @end

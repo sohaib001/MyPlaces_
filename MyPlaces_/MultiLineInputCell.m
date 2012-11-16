@@ -9,7 +9,7 @@
 #import "MultiLineInputCell.h"
 
 @implementation MultiLineInputCell
-@synthesize commentLabel;
+
 @synthesize commentTextView;
 
 - (id)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier
@@ -41,4 +41,10 @@
     return result;
 }
 
+-(void)drawRect:(CGRect)rect{
+    [super drawRect:rect];
+    self.commentTextView.layer.cornerRadius = 5;
+    self.commentTextView.layer.borderWidth =2 ;
+    self.commentTextView.layer.borderColor = [[UIColor blackColor] CGColor];
+}
 @end

@@ -9,7 +9,7 @@
 #import "InputCell.h"
 
 @implementation InputCell
-@synthesize placeNameLabel;
+
 @synthesize placeNameTextField;
 
 - (id)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier
@@ -29,6 +29,6 @@
 }
 
 - (IBAction)inputEntered:(id)sender {
-    [placeNameLabel resignFirstResponder];
+    [sender resignFirstResponder];
 }
 @end

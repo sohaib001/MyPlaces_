@@ -9,8 +9,11 @@
 #import <UIKit/UIKit.h>
 
 @interface InputCell : UITableViewCell
-@property (strong, nonatomic) IBOutlet UILabel *placeNameLabel;
+
+
+
 @property (strong, nonatomic) IBOutlet UITextField *placeNameTextField;
+
 - (IBAction)inputEntered:(id)sender;
 
 @end

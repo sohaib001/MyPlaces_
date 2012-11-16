@@ -15,26 +15,22 @@
 
 - (void)makePlistFileWithName:(NSString *)pListName{
    
+    
     NSError *err;
+    
     self.fileManager = [NSFileManager defaultManager];
     self.plistLocation = [[NSString alloc] init];
    
-    //getting the path to document directory for the file
-  
     NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
+    
     NSString *documentDirectory = [paths objectAtIndex:0];
+    
     self.plistLocation = [documentDirectory stringByAppendingPathComponent:pListName];
     
-   // self.plistLocation = [[NSBundle mainBundle] pathForResource:@"Details" ofType:@"plist"];;
-    //checking to see of the file already exist
     if(![self.fileManager fileExistsAtPath:self.plistLocation])
     {
-        //if doesnt exist get the the file path from bindle
         NSString *correctPath = [[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:pListName];
-        
-//        [[NSBundle mainBundle] pathForResource:@"Details" ofType:@"plist"];
-        
-        //copy the file from bundle to document directory
+    
         [self.fileManager copyItemAtPath:correctPath toPath:self.plistLocation error:&err];      
     }
     
@@ -53,7 +49,7 @@
         [plistDictionary setObject:[NSMutableArray arrayWithObjects:nil] forKey:@"My Work Place"];
         [plistDictionary setObject:[NSMutableArray arrayWithObjects:nil] forKey:@"My Barber Shop"];
         [plistDictionary setObject:[NSMutableArray arrayWithObjects:nil] forKey:@"My Shopping Mall"];
-     [plistDictionary writeToFile:self.plistLocation atomically:YES];
+        [plistDictionary writeToFile:self.plistLocation atomically:YES];
     }
       
     NSMutableArray *categoryDetails;

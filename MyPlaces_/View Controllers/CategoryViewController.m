@@ -17,7 +17,7 @@
 
 
 @implementation CategoryViewController
-
+@synthesize placeInfo = _placeInfo;
 @synthesize selectedCategory = _selectedCategory;
 @synthesize delegate = _delegate;
 @synthesize chooseCategoryPickerView;
@@ -46,13 +46,9 @@
 {
     [super viewDidLoad];
     // Do any additional setup after loading the view from its nib.
+    
     [self addCategories];
-    UIBarButtonItem	*saveButton = [[UIBarButtonItem alloc] initWithTitle:@"Save" 
-                                                                   style:UIBarButtonItemStylePlain 
-                                                                  target:self 
-                                                                  action:@selector(saveCategory)];
-    self.navigationItem.rightBarButtonItem = saveButton;
-    self.navigationItem.rightBarButtonItem.enabled = YES;
+    
 }
 
 - (void)viewDidUnload
@@ -75,17 +71,23 @@
     [self setCategories:nil];
     [self setSelectedCategory:nil];
 }
-
-- (void)saveCategory
-{
+- (void)viewDidAppear:(BOOL)animated{
+    [super viewDidAppear:YES];
+    [self.chooseCategoryPickerView selectRow:[self.categories indexOfObject:self.placeInfo.category ]inComponent:0 animated:YES];
+}
+-(void)viewWillDisappear:(BOOL)animated{
+    [super viewWillDisappear:animated];
     [self.delegate didCategorySelect:self.selectedCategory];
-    
 }
 
 - (void)addCategories
 {
-    self.categories  = [[NSMutableArray alloc] initWithObjects:@"My Shopping Mall",@"My Work Place",@"My Barber Shop", nil];
-    [self.categories addObjectsFromArray:_categories];
+    self.categories = [[NSMutableArray alloc] initWithCapacity:3];
+    [self.categories addObject:@"My Shopping Mall"];
+    [self.categories addObject:@"My Barber Shop"];
+    [self.categories addObject:@"My Work Place"];
+    self.selectedCategory = [self.categories objectAtIndex:0];
+  
 }
 
 
@@ -115,4 +117,6 @@
 {
     return [self.categories objectAtIndex:row];
 }
+
+
 @end

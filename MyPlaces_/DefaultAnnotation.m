@@ -18,5 +18,8 @@
 -(NSString *)title{
     return @"Add Details";
 }
-
+- (void)setCoordinate:(CLLocationCoordinate2D)newCoordinate
+{
+    self.coordinates = newCoordinate;
+}
 @end

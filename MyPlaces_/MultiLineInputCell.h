@@ -7,9 +7,9 @@
 //
 
 #import <UIKit/UIKit.h>
-
+#import <QuartzCore/QuartzCore.h>
 @interface MultiLineInputCell : UITableViewCell <UITextViewDelegate>
-@property (strong, nonatomic) IBOutlet UILabel *commentLabel;
+
 @property (strong, nonatomic) IBOutlet UITextView *commentTextView;
 
 @end

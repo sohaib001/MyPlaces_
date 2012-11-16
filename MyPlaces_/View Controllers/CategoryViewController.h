@@ -7,7 +7,7 @@
 //
 
 #import <UIKit/UIKit.h>
-
+#import "PlaceInfo.h"
 @protocol  CategoryDelegate <NSObject>
 
 - (void)didCategorySelect:(NSString *) categroy;
@@ -17,8 +17,14 @@
 @interface CategoryViewController : UIViewController <UIPickerViewDelegate ,UIPickerViewDataSource>
 
 @property (assign) id<CategoryDelegate> delegate;
+
 @property (strong, nonatomic) NSMutableArray *categories;
+
 @property (strong, nonatomic) IBOutlet UIPickerView *chooseCategoryPickerView;
+
 @property (strong, nonatomic) NSString *selectedCategory;
+
+@property (strong, nonatomic) PlaceInfo *placeInfo;
+
 
 @end
