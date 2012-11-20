@@ -26,7 +26,11 @@
 		E67C0EF8164BD1B000E9BE16 /* CategoryViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E67C0EF6164BD1B000E9BE16 /* CategoryViewController.m */; };
 		E67C0EF9164BD1B000E9BE16 /* CategoryViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = E67C0EF7164BD1B000E9BE16 /* CategoryViewController.xib */; };
 		E6A3CFCB165137BF00EBAA92 /* PlaceInfo.m in Sources */ = {isa = PBXBuildFile; fileRef = E6A3CFCA165137BF00EBAA92 /* PlaceInfo.m */; };
+		E6BC45CA165A4056008D007A /* SelectCategoryViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E6BC45C8165A4056008D007A /* SelectCategoryViewController.m */; };
+		E6BC45CB165A4056008D007A /* SelectCategoryViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = E6BC45C9165A4056008D007A /* SelectCategoryViewController.xib */; };
+		E6BC45CE165A50D7008D007A /* ModelHandler.m in Sources */ = {isa = PBXBuildFile; fileRef = E6BC45CD165A50D6008D007A /* ModelHandler.m */; };
 		E6C2F9F81655381F00EB28A5 /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E6C2F9F71655381F00EB28A5 /* QuartzCore.framework */; };
+		E6F25257165B5A12003284B1 /* SelectedCategoryAnnotation.m in Sources */ = {isa = PBXBuildFile; fileRef = E6F25256165B5A12003284B1 /* SelectedCategoryAnnotation.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -60,8 +64,15 @@
 		E67C0EF7164BD1B000E9BE16 /* CategoryViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = CategoryViewController.xib; sourceTree = "<group>"; };
 		E6A3CFC9165137BF00EBAA92 /* PlaceInfo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PlaceInfo.h; sourceTree = "<group>"; };
 		E6A3CFCA165137BF00EBAA92 /* PlaceInfo.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PlaceInfo.m; sourceTree = "<group>"; };
+		E6BC45C7165A4056008D007A /* SelectCategoryViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SelectCategoryViewController.h; sourceTree = "<group>"; };
+		E6BC45C8165A4056008D007A /* SelectCategoryViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SelectCategoryViewController.m; sourceTree = "<group>"; };
+		E6BC45C9165A4056008D007A /* SelectCategoryViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = SelectCategoryViewController.xib; sourceTree = "<group>"; };
+		E6BC45CC165A50D5008D007A /* ModelHandler.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ModelHandler.h; sourceTree = "<group>"; };
+		E6BC45CD165A50D6008D007A /* ModelHandler.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ModelHandler.m; sourceTree = "<group>"; };
 		E6C2F9F61655224300EB28A5 /* DetailsViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DetailsViewController.h; sourceTree = "<group>"; };
 		E6C2F9F71655381F00EB28A5 /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
+		E6F25255165B5A12003284B1 /* SelectedCategoryAnnotation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SelectedCategoryAnnotation.h; sourceTree = "<group>"; };
+		E6F25256165B5A12003284B1 /* SelectedCategoryAnnotation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SelectedCategoryAnnotation.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -119,6 +130,8 @@
 				E67C0EDB164B8FD500E9BE16 /* View Controllers */,
 				E67C0EE8164B98BC00E9BE16 /* DefaultAnnotation.h */,
 				E67C0EE9164B98BC00E9BE16 /* DefaultAnnotation.m */,
+				E6F25255165B5A12003284B1 /* SelectedCategoryAnnotation.h */,
+				E6F25256165B5A12003284B1 /* SelectedCategoryAnnotation.m */,
 				E67C0EEB164BAF1700E9BE16 /* InputCell.h */,
 				E67C0EEC164BAF1800E9BE16 /* InputCell.m */,
 				E67C0EF0164BB2E000E9BE16 /* MultiLineInputCell.h */,
@@ -154,6 +167,11 @@
 				E67C0EF5164BD1B000E9BE16 /* CategoryViewController.h */,
 				E67C0EF6164BD1B000E9BE16 /* CategoryViewController.m */,
 				E67C0EF7164BD1B000E9BE16 /* CategoryViewController.xib */,
+				E6BC45C7165A4056008D007A /* SelectCategoryViewController.h */,
+				E6BC45C8165A4056008D007A /* SelectCategoryViewController.m */,
+				E6BC45C9165A4056008D007A /* SelectCategoryViewController.xib */,
+				E6BC45CC165A50D5008D007A /* ModelHandler.h */,
+				E6BC45CD165A50D6008D007A /* ModelHandler.m */,
 			);
 			path = "View Controllers";
 			sourceTree = "<group>";
@@ -221,6 +239,7 @@
 				E67C0EE7164B911F00E9BE16 /* DetailsViewController.xib in Resources */,
 				E67C0EF9164BD1B000E9BE16 /* CategoryViewController.xib in Resources */,
 				E61F90271650D0B0002795ED /* Details.plist in Resources */,
+				E6BC45CB165A4056008D007A /* SelectCategoryViewController.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -241,6 +260,9 @@
 				E67C0EF8164BD1B000E9BE16 /* CategoryViewController.m in Sources */,
 				E61F902B1650DB63002795ED /* SaveDetails.m in Sources */,
 				E6A3CFCB165137BF00EBAA92 /* PlaceInfo.m in Sources */,
+				E6BC45CA165A4056008D007A /* SelectCategoryViewController.m in Sources */,
+				E6BC45CE165A50D7008D007A /* ModelHandler.m in Sources */,
+				E6F25257165B5A12003284B1 /* SelectedCategoryAnnotation.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

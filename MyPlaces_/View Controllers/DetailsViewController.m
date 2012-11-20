@@ -14,7 +14,8 @@
 //- (void)addCommentCell:(UITableViewCell *)cell;
 //- (void)addCategoryCell:(UITableViewCell *)cell;
 - (void)addSaveButton;
-
+- (BOOL)isCategorySelected;
+-(BOOL) isPlaceNameFill;
 @end
 
 @implementation DetailsViewController
@@ -98,6 +99,11 @@
 - (void)saveDetailsToFile
 {
    
+    if (!self.isPlaceNameFill || !self.isCategorySelected) {
+        UIAlertView * fillFields = [[UIAlertView alloc] initWithTitle:@"Category/Place Name" message:@"Please fill these both fields" delegate:self cancelButtonTitle:@"ok" otherButtonTitles: nil];
+        [fillFields show];
+    }
+    else{
     NSMutableDictionary *details = [[ NSMutableDictionary alloc] init];
     
     [details setObject:self.placeNameTableViewCell.placeNameTextField.text  forKey:@"Place Name"];
@@ -118,18 +124,40 @@
     [saveDetails makePlistFileWithName:@"Details.plist"];
     [saveDetails saveDetailsInDictionary:details forKey:self.category];
 
-   
-}
+    [self.navigationController popViewControllerAnimated:YES];
 
+    }
+}
 
 #pragma mark - UITableViewDataSource
 
 -(NSInteger)numberOfSectionsInTableView:(UITableView *)tableView{
-    return 1;
+    return 2;
 }
 
 -(NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section{
-    return 3;
+    int numberOfrows = 0;
+    if (section  == 0 ) {
+        
+        numberOfrows = 2;
+    
+    }else{
+        
+        numberOfrows = 1;
+    
+    }
+    
+    return numberOfrows;
+}
+
+-(NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section{
+    
+    NSString *sectionHeader;
+    
+    if (section == 1) {
+        sectionHeader = @"Comment";
+    }
+    return sectionHeader;
 }
 
 -(UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath 
@@ -137,60 +165,65 @@
     
     UITableViewCell *cell;
     
-    if (indexPath.row == 0) {
-        
-        NSString *cellIdentifier=@"InputCell";
-        
-        cell=[tableView dequeueReusableCellWithIdentifier:cellIdentifier]; 
-        if (cell==nil) {
+        if (indexPath.section == 0) {
             
-            cell = self.placeNameTableViewCell;
+            if (indexPath.row == 0) {
+                
+                NSString *cellIdentifier=@"InputCell";
+                
+                cell=[tableView dequeueReusableCellWithIdentifier:cellIdentifier]; 
+                if (cell==nil) {
+                    
+                    cell = self.placeNameTableViewCell;
+                    
+                    self.placeNameTextField = self.placeNameTableViewCell.placeNameTextField;
+                    self.placeNameTextField.delegate = self;
+                    self.placeNameTextField.text = self.placeInfo.placeName;
+                
+                    [cell setSelectionStyle:UITableViewCellSelectionStyleNone];
+                    //[self addPlaceNameCell:cell];
+                } 
+            }else{
+                    
+                    NSString *cellIdentifier = @"Category";
+                    cell = [tableView dequeueReusableCellWithIdentifier:cellIdentifier];
+                    if (cell==nil) {
+                        
+                        cell= [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleValue1 reuseIdentifier:cellIdentifier]; 
+                        
+                        cell.textLabel.text =@"Category";
+                        
+                        cell.accessoryType=UITableViewCellAccessoryDisclosureIndicator;
+                        //[self addCategoryCell:cell];
+                    }     
+                    cell.detailTextLabel.text = self.category;
+                }
+                
+            }
+        else{
+            NSString *cellIdentifier=@"MultiLineInputCell";
             
-            self.placeNameTextField = self.placeNameTableViewCell.placeNameTextField;
-            self.placeNameTextField.delegate = self;
-            self.placeNameTextField.text = self.placeInfo.placeName;
+            cell=[tableView dequeueReusableCellWithIdentifier:cellIdentifier];
             
-            [cell setSelectionStyle:UITableViewCellSelectionStyleNone];
-            //[self addPlaceNameCell:cell];
-        }        
-        
-
-
-    }else if(indexPath.row == 2) {
-        
-        NSString *cellIdentifier=@"MultiLineInputCell";
-        
-        cell=[tableView dequeueReusableCellWithIdentifier:cellIdentifier];
-        
-        if (cell==nil) {
-            
-            cell = self.commentTableViewCell;
-            
-            self.commentTexView   =  self.commentTableViewCell.commentTextView;
-            self.commentTexView.delegate = self;
-            self.commentTexView.text = self.placeInfo.comment;
-            self.commentTexView.layer.borderColor=self.placeNameTextField.layer.borderColor;
-            [cell setSelectionStyle:UITableViewCellSelectionStyleNone];
-            [cell setNeedsDisplay];
-            //[self addCommentCell:cell];
-           
+            if (cell==nil) {
+                
+                cell = self.commentTableViewCell;
+                
+                self.commentTexView   =  self.commentTableViewCell.commentTextView;
+                self.commentTexView.delegate = self;
+                self.commentTexView.text = self.placeInfo.comment;
+                
+                UIToolbar * actionToolbar = [[UIToolbar alloc] initWithFrame:CGRectMake(0, 0, 320, 30)];
+                UIBarButtonItem *actionButton = [[UIBarButtonItem alloc] initWithTitle:@"Hide" style:UIBarButtonItemStyleBordered target:self action:@selector(hideKeyboard)];
+                [actionToolbar setItems:[NSArray arrayWithObject:actionButton] animated:YES];
+                self.commentTexView.inputAccessoryView= actionToolbar;
+                
+                [cell setSelectionStyle:UITableViewCellSelectionStyleNone];                               
+                //[self addCommentCell:cell];
+            }
+       
         }
-    }else{
-        
-        NSString *cellIdentifier = @"Category";
-        cell = [tableView dequeueReusableCellWithIdentifier:cellIdentifier];
-        if (cell==nil) {
             
-            cell= [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleValue1 reuseIdentifier:cellIdentifier]; 
-            
-            cell.textLabel.text =@"Category";
-            
-            cell.accessoryType=UITableViewCellAccessoryDisclosureIndicator; 
-            //[self addCategoryCell:cell];
-        }     
-        cell.detailTextLabel.text = self.category;
-    }
-    
     return cell;
 }
 
@@ -198,11 +231,12 @@
 
 -(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
+ 
     [tableView deselectRowAtIndexPath:indexPath animated:YES];
     CategoryViewController *categoryViewController = [[CategoryViewController alloc] init];
     categoryViewController.delegate =self;
     categoryViewController.placeInfo = self.placeInfo;
-    if (indexPath.row == 1) {
+    if (indexPath.row == 1 && indexPath.section == 0) {
         [self.navigationController pushViewController:categoryViewController animated:YES];
     }
     
@@ -210,8 +244,8 @@
 
 -(CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath{
     
-    if (indexPath.row == 2) {
-        return 330;
+    if (indexPath.row == 0 && indexPath.section == 1 ) {
+        return 159;
     }else{
         return 44;
     }
@@ -238,9 +272,9 @@
 
 -(void)textViewDidBeginEditing:(UITextView *)textView {
     
-    self.detailsTableView.frame= CGRectMake(self.detailsTableView.frame.origin.x, self.detailsTableView.frame.origin.y, self.detailsTableView.frame.size.width, self.detailsTableView.frame.size.height - 195);
+    self.detailsTableView.frame= CGRectMake(self.detailsTableView.frame.origin.x, self.detailsTableView.frame.origin.y, self.detailsTableView.frame.size.width, self.detailsTableView.frame.size.height - 230);
     
-    NSIndexPath *indexPath =[NSIndexPath indexPathForRow:2 inSection:0];
+    NSIndexPath *indexPath =[NSIndexPath indexPathForRow:0 inSection:1];
     [self.detailsTableView scrollToRowAtIndexPath:indexPath atScrollPosition:UITableViewScrollPositionTop animated:YES];
     
 }
@@ -248,28 +282,43 @@
 
 -(void) textViewDidEndEditing:(UITextView *)textView {
     
-    self.detailsTableView.frame= CGRectMake(self.detailsTableView.frame.origin.x, self.detailsTableView.frame.origin.y, self.detailsTableView.frame.size.width, self.detailsTableView.frame.size.height + 195);
+    self.detailsTableView.frame= CGRectMake(self.detailsTableView.frame.origin.x, self.detailsTableView.frame.origin.y, self.detailsTableView.frame.size.width, self.detailsTableView.frame.size.height + 230);
     
-    NSIndexPath *indexPath =[NSIndexPath indexPathForRow:2 inSection:0];
+    NSIndexPath *indexPath =[NSIndexPath indexPathForRow:0 inSection:1];
     [self.detailsTableView scrollToRowAtIndexPath:indexPath atScrollPosition:UITableViewScrollPositionTop animated:YES];
     
 
 }
 
--(BOOL)textView:(UITextView *)textView shouldChangeTextInRange:(NSRange)range replacementText:(NSString *)text
-{
-    BOOL result = YES;
-    if([text isEqualToString:@"\n"])
-    {
-        self.placeInfo.comment = textView.text;
-        [textView
-         resignFirstResponder];
-        result = NO;
+-(BOOL)isCategorySelected{
+    
+    BOOL result=NO;
+    
+    if (self.category!=nil ) {
+        result = YES;
     }
     return result;
 }
- 
+
+-(BOOL) isPlaceNameFill{
+    BOOL result=NO;
+    
+
+    if (self.placeNameTableViewCell.placeNameTextField.text.length!=0) {
+        result = YES;
+    }
+    return result;
+}
+- (void) hideKeyboard{
+    self.placeInfo.comment = self.commentTableViewCell.commentTextView.text;
+    [self.commentTexView resignFirstResponder];
+}
 /*
+#pragma mark - UIAlertViewDelegate
+-(void)alertViewCancel:(UIAlertView *)alertView{
+    [self resignFirstResponder];
+}
+
 - (void) addPlaceNameCell:(UITableViewCell *)cell
 {
     

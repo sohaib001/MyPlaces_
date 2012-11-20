@@ -10,13 +10,16 @@
 
 @implementation DefaultAnnotation
 @synthesize coordinates = _coordinates;
+@synthesize annotationTitle = annotationTitle;
 
 
 -(CLLocationCoordinate2D)coordinate{
     return self.coordinates;
 }
 -(NSString *)title{
-    return @"Add Details";
+    
+    return self.annotationTitle;
+        
 }
 - (void)setCoordinate:(CLLocationCoordinate2D)newCoordinate
 {

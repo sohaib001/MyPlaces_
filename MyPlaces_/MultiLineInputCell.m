@@ -44,7 +44,7 @@
 -(void)drawRect:(CGRect)rect{
     [super drawRect:rect];
     self.commentTextView.layer.cornerRadius = 5;
-    self.commentTextView.layer.borderWidth =2 ;
-    self.commentTextView.layer.borderColor = [[UIColor blackColor] CGColor];
+    self.commentTextView.layer.borderWidth =1 ;
+    self.commentTextView.layer.borderColor = [[UIColor grayColor] CGColor];
 }
 @end

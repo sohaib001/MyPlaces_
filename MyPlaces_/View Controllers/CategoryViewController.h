@@ -14,7 +14,7 @@
 
 @end
 
-@interface CategoryViewController : UIViewController <UIPickerViewDelegate ,UIPickerViewDataSource>
+@interface CategoryViewController : UIViewController 
 
 @property (assign) id<CategoryDelegate> delegate;
 

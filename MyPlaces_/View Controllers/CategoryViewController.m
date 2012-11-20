@@ -72,12 +72,17 @@
     [self setSelectedCategory:nil];
 }
 - (void)viewDidAppear:(BOOL)animated{
+    
     [super viewDidAppear:YES];
+    
     [self.chooseCategoryPickerView selectRow:[self.categories indexOfObject:self.placeInfo.category ]inComponent:0 animated:YES];
+
 }
 -(void)viewWillDisappear:(BOOL)animated{
+
     [super viewWillDisappear:animated];
     [self.delegate didCategorySelect:self.selectedCategory];
+
 }
 
 - (void)addCategories

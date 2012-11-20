@@ -13,7 +13,7 @@
 #import "SaveDetails.h"
 #import "PlaceInfo.h"
 
-@interface DetailsViewController : UIViewController <UITableViewDataSource, UITableViewDelegate, CategoryDelegate,UITextFieldDelegate,UITextViewDelegate>
+@interface DetailsViewController : UIViewController <UITableViewDataSource, UITableViewDelegate, CategoryDelegate,UITextFieldDelegate,UITextViewDelegate,UIAlertViewDelegate>
 
 @property (strong, nonatomic) PlaceInfo *placeInfo;
 @property (strong, nonatomic) UITextField *placeNameTextField; 
