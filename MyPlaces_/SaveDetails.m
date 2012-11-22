@@ -30,7 +30,7 @@
     if(![self.fileManager fileExistsAtPath:self.plistLocation])
     {
         NSString *correctPath = [[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:pListName];
-    
+
         [self.fileManager copyItemAtPath:correctPath toPath:self.plistLocation error:&err];      
     }
     
@@ -75,6 +75,7 @@
 
 
 - (void)dealloc{
+    
     [self setFileManager:nil];
     [self setPlistLocation:nil];
 }
