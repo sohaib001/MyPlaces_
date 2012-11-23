@@ -22,13 +22,15 @@
 @property (strong, nonatomic) DataSource *dataSource;
 @property (strong, nonatomic) PlaceInfo *placeInfo;
 @property (strong, nonatomic)  UIActionSheet *categoryActionSheet; 
-@property (strong, nonatomic) NSString * categoryToShowPlaceOnMap;
-
+@property (strong, nonatomic) NSString *categoryToShowPlaceOnMap;
+@property (strong, nonatomic) NSMutableArray *alreadySelectedCategoryToShowPlaceOnMap;
 
 - (void)addDetails;
 - (void)showPlacesOfSelectedCategory;
 - (void)makeCategorySelectionView;
-
+- (void)addAnnotationsToSelectedCategoryToShowPlacesOnMap;
+- (BOOL)isSelectedCategoryToShowPlacesOnMap;
+- (void)addToolbarOnCategoryActionSheet;
 @end
 
 @implementation MapViewController
@@ -41,7 +43,7 @@
 @synthesize placeInfo = _placeInfo;
 @synthesize categoryToShowPlaceOnMap = _categoryToShowPlaceOnMap;
 @synthesize defaultAnnotation = _defaultAnnotation;
-
+@synthesize alreadySelectedCategoryToShowPlaceOnMap = _alreadySelectedCategoryToShowPlaceOnMap;
 
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
 {
@@ -65,7 +67,7 @@
 {
     [super viewDidLoad];
     
-    self.dataSource = [[DataSource alloc] init];
+    
     
     
     [self makeCategorySelectionView];
@@ -162,6 +164,7 @@
     
     [super viewDidAppear:animated];
     self.placeInfo = [[PlaceInfo alloc] init];
+    self.dataSource = [[DataSource alloc] init];
     self.mapView.showsUserLocation = YES;  
 }
 
@@ -242,7 +245,7 @@
     }
     else
     {
-        static NSString *reuseId = @"pin";
+        static NSString *reuseId = @"DefaultAnnotationPin";
       customPinView = (MKPinAnnotationView *)[mapView dequeueReusableAnnotationViewWithIdentifier:reuseId];
         if (customPinView == nil)
         {
@@ -268,12 +271,43 @@
 }
 
 
-- (void) showPlacesOfSelectedCategory{
-    
+- (void)showPlacesOfSelectedCategory{
     
    
+        if (self.alreadySelectedCategoryToShowPlaceOnMap == nil) {
+        
+            self.alreadySelectedCategoryToShowPlaceOnMap = [[NSMutableArray alloc] initWithCapacity:0];
+            [self.alreadySelectedCategoryToShowPlaceOnMap addObject:self.categoryToShowPlaceOnMap];
+            [self addAnnotationsToSelectedCategoryToShowPlacesOnMap];
+        
+        }else{
+
+            if  (!self.isSelectedCategoryToShowPlacesOnMap) {
+                
+                [self.alreadySelectedCategoryToShowPlaceOnMap addObject:self.categoryToShowPlaceOnMap];
+                [self addAnnotationsToSelectedCategoryToShowPlacesOnMap];
+            
+            }
+        }
+        
+}
+
+- (BOOL)isSelectedCategoryToShowPlacesOnMap{
+    
+    __block BOOL result = NO;
+    
+    [self.alreadySelectedCategoryToShowPlaceOnMap enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
+        if ([obj isEqualToString:self.categoryToShowPlaceOnMap]) {
+            result = YES;
+        }
+    } ];
+    
+    return result;
+}
+- (void) addAnnotationsToSelectedCategoryToShowPlacesOnMap{
     NSArray * categoryDetails;
     categoryDetails = [self.dataSource listOfPlacesOfACategory:self.categoryToShowPlaceOnMap];
+    
     
     for (NSDictionary * detail in categoryDetails) {
         
@@ -281,7 +315,7 @@
         NSString * placeName =[detail objectForKey:@"Place Name"];
         
         CLLocationCoordinate2D  currentLocationCoordinates;
-        currentLocationCoordinates.latitude =
+        currentLocationCoordinates.latitude = 
         [[detail objectForKey:@"Latitude"] doubleValue];
         currentLocationCoordinates.longitude =
         [[detail objectForKey:@"Logitude"] doubleValue]; 
@@ -291,9 +325,8 @@
         [annotation setCoordinates:currentLocationCoordinates];
         [self.mapView addAnnotation:annotation];
     }
-    
-}
 
+}
 
 - (IBAction)addDefaultAnnotation:(UIButton *)sender {
     
@@ -316,11 +349,6 @@
         [self.mapView addAnnotation:self.defaultAnnotation];
     
     sender.userInteractionEnabled = NO;
-     
-    
-   
-      
-    
 
 }
 
@@ -328,7 +356,7 @@
 
 - (void) makeCategorySelectionView{
     
-    self.categoryActionSheet = [[UIActionSheet alloc] initWithTitle:@"Select Category" 
+    self.categoryActionSheet = [[UIActionSheet alloc] initWithTitle:nil 
                                                       delegate:self
                                              cancelButtonTitle:nil
                                         destructiveButtonTitle:nil
@@ -342,40 +370,42 @@
 {
     
     [self.categoryActionSheet showInView:self.view];
-    [self.categoryActionSheet setFrame:CGRectMake(0, 100, 320, 320)];
+    [self.categoryActionSheet setFrame:CGRectMake(0, 156, 320, 260)];
+    [self addToolbarOnCategoryActionSheet];
+    
 }
 
-
-#pragma mark - UIActionSheetDelegate
-
--(void)willPresentActionSheet:(UIActionSheet *)actionSheet{
-    
-    [self.mapView removeAnnotations:self.mapView.annotations];
-    
-    UIPickerView *categoryPickerView = [[UIPickerView alloc] initWithFrame:CGRectMake(20,70,280,0)];
-    categoryPickerView.delegate = self;
-    categoryPickerView.showsSelectionIndicator = YES;
-    
-    [self.categoryActionSheet addSubview:categoryPickerView];
-   
-    
-    UIToolbar * actionToolbar = [[UIToolbar alloc] initWithFrame:CGRectMake(20, 40, 280, 30)];
+- (void) addToolbarOnCategoryActionSheet{
+    UIToolbar * actionToolbar = [[UIToolbar alloc] initWithFrame:CGRectMake(0, 0, 320, 30)];
     
     UIBarButtonItem *cancelButton = [[UIBarButtonItem alloc] initWithTitle:@"Cancel" style:UIBarButtonItemStyleBordered target:self action:@selector(actionCancel)];
     UIBarButtonItem *okButton = [[UIBarButtonItem alloc] initWithTitle:@"OK" style:UIBarButtonItemStyleBordered target:self action:@selector(actionOK)];
     UIBarButtonItem *flexibleSpace =[[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:nil action:nil];
     
     [actionToolbar setItems:[NSArray arrayWithObjects:cancelButton,flexibleSpace,okButton, nil] animated:YES];
-       
     [self.categoryActionSheet addSubview:actionToolbar];
-
 }
 
-- (void)actionCancel{
+#pragma mark - UIActionSheetDelegate
+
+-(void)willPresentActionSheet:(UIActionSheet *)actionSheet{
+    
+    UIPickerView *categoryPickerView = [[UIPickerView alloc] initWithFrame:CGRectMake(20,35,280,0)];
+    categoryPickerView.delegate = self;
+    categoryPickerView.showsSelectionIndicator = YES;
+    
+    [self.categoryActionSheet addSubview:categoryPickerView];
+}
+
+- (void)actionCancel
+{
+  
      [self.categoryActionSheet dismissWithClickedButtonIndex:0 animated:YES];
 }
 
-- (void)actionOK{
+- (void)actionOK
+{
+    
     [self showPlacesOfSelectedCategory];
     [self.categoryActionSheet dismissWithClickedButtonIndex:0 animated:YES];
    

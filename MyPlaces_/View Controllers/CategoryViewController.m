@@ -7,21 +7,21 @@
 //
 
 #import "CategoryViewController.h"
-
+#import "DataSource.h"
 @interface  CategoryViewController()
 
 
-- (void)addCategories;
-
+@property (strong, nonatomic) DataSource *dataSource;
 @end
 
 
 @implementation CategoryViewController
+
 @synthesize placeInfo = _placeInfo;
 @synthesize selectedCategory = _selectedCategory;
 @synthesize delegate = _delegate;
 @synthesize chooseCategoryPickerView;
-@synthesize categories = _categories;
+@synthesize dataSource = _dataSource;
 
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
 {
@@ -45,37 +45,36 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-    // Do any additional setup after loading the view from its nib.
-    
-    [self addCategories];
-    
+    self.dataSource = [[DataSource alloc] init];
+
 }
 
 - (void)viewDidUnload
 {
+    
     [self setChooseCategoryPickerView:nil];
     [super viewDidUnload];
-    // Release any retained subviews of the main view.
-    // e.g. self.myOutlet = nil;
+    
 }
 
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation
 {
-    // Return YES for supported orientations
+
     return (interfaceOrientation == UIInterfaceOrientationPortrait);
 }
 
 - (void)dealloc{
   
     [self setDelegate:nil];
-    [self setCategories:nil];
     [self setSelectedCategory:nil];
 }
 - (void)viewDidAppear:(BOOL)animated{
     
     [super viewDidAppear:YES];
+     
     
-    [self.chooseCategoryPickerView selectRow:[self.categories indexOfObject:self.placeInfo.category ]inComponent:0 animated:YES];
+    [self.chooseCategoryPickerView selectRow:[[self.dataSource categoryNames] indexOfObject:self.placeInfo.category] inComponent:0 animated:YES];
+      self.selectedCategory = [[self.dataSource categoryNames] objectAtIndex:0];
 
 }
 -(void)viewWillDisappear:(BOOL)animated{
@@ -85,24 +84,13 @@
 
 }
 
-- (void)addCategories
-{
-    self.categories = [[NSMutableArray alloc] initWithCapacity:3];
-    [self.categories addObject:@"My Shopping Mall"];
-    [self.categories addObject:@"My Barber Shop"];
-    [self.categories addObject:@"My Work Place"];
-    self.selectedCategory = [self.categories objectAtIndex:0];
-  
-}
-
-
 #pragma mark - UIPickerViewDelegate
 
 
 -(void)pickerView:(UIPickerView *)pickerView didSelectRow:(NSInteger)row inComponent:(NSInteger)component
 {
     
-    self.selectedCategory = [self.categories objectAtIndex:row];
+    self.selectedCategory = [[self.dataSource categoryNames] objectAtIndex:row];
     
 }
 
@@ -110,7 +98,8 @@
 
 -(NSInteger)pickerView:(UIPickerView *)pickerView numberOfRowsInComponent:(NSInteger)component
 {
-    return self.categories.count;
+    
+    return [[self.dataSource categoryNames] count];
 }
 
 -(NSInteger)numberOfComponentsInPickerView:(UIPickerView *)pickerView
@@ -120,7 +109,7 @@
 }
 - (NSString *)pickerView:(UIPickerView *)pickerView titleForRow:(NSInteger)row forComponent:(NSInteger)component
 {
-    return [self.categories objectAtIndex:row];
+    return [[self.dataSource categoryNames] objectAtIndex:row];
 }
 
 

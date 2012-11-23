@@ -21,17 +21,17 @@
 {
     self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
     if (self) {
-        // Custom initialization
+       
     }
     return self;
 }
 
 - (void)didReceiveMemoryWarning
 {
-    // Releases the view if it doesn't have a superview.
+
     [super didReceiveMemoryWarning];
     
-    // Release any cached data, images, etc that aren't in use.
+    
 }
 
 #pragma mark - View lifecycle
@@ -39,7 +39,7 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-    // Do any additional setup after loading the view from its nib.
+
   
     [self.editCategoriesButton setTarget:self];
     [self.editCategoriesButton setAction:@selector(editCategories)];
@@ -49,29 +49,27 @@
     [self.showMapButton setTarget:self];
     [self.showMapButton setAction:@selector(showMap)];
     self.showMapButton.enabled = YES;
-   
-    
-    self.dataSource = [[DataSource alloc] init];
-    
-    
-    
     
 }
-- (void)showMap{
+
+- (void)showMap
+{
+    
     [self dismissModalViewControllerAnimated:YES];
 }
 
-- (void) editCategories{
+- (void)editCategories
+{
+
     if (self.AllCategoriesTableView.editing) {
+        
         [self.AllCategoriesTableView setEditing:NO 
                                        animated:YES];
     }else{
+        
         [self.AllCategoriesTableView setEditing:YES 
                                        animated:YES];
     }
-    
-    
-  
 }
 
 - (void)viewDidUnload
@@ -87,14 +85,24 @@
     return (interfaceOrientation == UIInterfaceOrientationPortrait);
 }
 
+- (void)viewWillAppear:(BOOL)animated
+{
+    
+    [super viewWillAppear:animated];
+    self.dataSource = [[DataSource alloc] init];
+
+}
 
 #pragma mark - UITableViewDataSource
 
--(NSInteger)numberOfSectionsInTableView:(UITableView *)tableView{
+-(NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
+{
+
     return [self.dataSource totalNumberOfCategories];
 }
 
--(NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section{
+-(NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
+{
 
     int numberOfrows = 0;
     

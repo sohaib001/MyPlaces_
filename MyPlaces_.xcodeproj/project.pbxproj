@@ -7,7 +7,6 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		E61F902B1650DB63002795ED /* SaveDetails.m in Sources */ = {isa = PBXBuildFile; fileRef = E61F902A1650DB63002795ED /* SaveDetails.m */; };
 		E67C0EC5164B8E3E00E9BE16 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E67C0EC4164B8E3E00E9BE16 /* UIKit.framework */; };
 		E67C0EC7164B8E3E00E9BE16 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E67C0EC6164B8E3E00E9BE16 /* Foundation.framework */; };
 		E67C0EC9164B8E3E00E9BE16 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E67C0EC8164B8E3E00E9BE16 /* CoreGraphics.framework */; };
@@ -36,8 +35,6 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		E61F90291650DB63002795ED /* SaveDetails.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SaveDetails.h; sourceTree = "<group>"; };
-		E61F902A1650DB63002795ED /* SaveDetails.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SaveDetails.m; sourceTree = "<group>"; };
 		E67C0EC0164B8E3E00E9BE16 /* MyPlaces_.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = MyPlaces_.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		E67C0EC4164B8E3E00E9BE16 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
 		E67C0EC6164B8E3E00E9BE16 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
@@ -140,8 +137,6 @@
 				E67C0EEC164BAF1800E9BE16 /* InputCell.m */,
 				E67C0EF0164BB2E000E9BE16 /* MultiLineInputCell.h */,
 				E67C0EF1164BB2E000E9BE16 /* MultiLineInputCell.m */,
-				E61F90291650DB63002795ED /* SaveDetails.h */,
-				E61F902A1650DB63002795ED /* SaveDetails.m */,
 				E6A3CFC9165137BF00EBAA92 /* PlaceInfo.h */,
 				E6A3CFCA165137BF00EBAA92 /* PlaceInfo.m */,
 			);
@@ -266,7 +261,6 @@
 				E67C0EED164BAF1800E9BE16 /* InputCell.m in Sources */,
 				E67C0EF2164BB2E000E9BE16 /* MultiLineInputCell.m in Sources */,
 				E67C0EF8164BD1B000E9BE16 /* CategoryViewController.m in Sources */,
-				E61F902B1650DB63002795ED /* SaveDetails.m in Sources */,
 				E6A3CFCB165137BF00EBAA92 /* PlaceInfo.m in Sources */,
 				E6BC45CE165A50D7008D007A /* DataSource.m in Sources */,
 				E6F25257165B5A12003284B1 /* SelectedCategoryAnnotation.m in Sources */,

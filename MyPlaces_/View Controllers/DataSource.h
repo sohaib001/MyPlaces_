@@ -18,7 +18,9 @@
 - (NSDictionary *)listOfCategories;
 - (NSUInteger)totalNumberOfCategories;
 - (NSUInteger)totalNumberOfPlacesOfACategory:(NSString *)category;
-- (NSUInteger ) totalNumberOfPlacesOfACategoryAtIndex:(NSUInteger)index;
-- (NSString *) placeNameOfACategory:(NSString *) category AtcategoryDetailIndex:(NSUInteger) index;
+- (NSUInteger)totalNumberOfPlacesOfACategoryAtIndex:(NSUInteger)index;
+- (NSString *)placeNameOfACategory:(NSString *) category AtcategoryDetailIndex:(NSUInteger) index;
+- (void)addPlaceDetails:(NSDictionary *)details InACategory:(NSString *)category;
+- (void)addANewCategory:(NSString *) category;
 
 @end

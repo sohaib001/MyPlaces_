@@ -8,6 +8,7 @@
 
 
 #import "DetailsViewController.h"
+#import "DataSource.h"
 @interface DetailsViewController()
 
 //- (void)addPlaceNameCell:(UITableViewCell *)cell;
@@ -100,10 +101,12 @@
 {
    
     if (!self.isPlaceNameFill || !self.isCategorySelected) {
+    
         UIAlertView * fillFields = [[UIAlertView alloc] initWithTitle:@"Category/Place Name" message:@"Please fill these both fields" delegate:self cancelButtonTitle:@"ok" otherButtonTitles: nil];
         [fillFields show];
-    }
-    else{
+    
+    }else{
+        
     NSMutableDictionary *details = [[ NSMutableDictionary alloc] init];
     
     [details setObject:self.placeNameTableViewCell.placeNameTextField.text  forKey:@"Place Name"];
@@ -118,11 +121,9 @@
   
     
   
-    SaveDetails *saveDetails   = [[SaveDetails alloc] init];
+    DataSource *dataSource   = [[DataSource alloc] init];
     
-    
-    [saveDetails makePlistFileWithName:@"Details.plist"];
-    [saveDetails saveDetailsInDictionary:details forKey:self.category];
+    [dataSource addPlaceDetails:details InACategory:self.category];
 
     [self.navigationController popViewControllerAnimated:YES];
 
@@ -214,8 +215,11 @@
                 self.commentTexView.text = self.placeInfo.comment;
                 
                 UIToolbar * actionToolbar = [[UIToolbar alloc] initWithFrame:CGRectMake(0, 0, 320, 30)];
-                UIBarButtonItem *actionButton = [[UIBarButtonItem alloc] initWithTitle:@"Hide" style:UIBarButtonItemStyleBordered target:self action:@selector(hideKeyboard)];
-                [actionToolbar setItems:[NSArray arrayWithObject:actionButton] animated:YES];
+                UIBarButtonItem *actionButton = [[UIBarButtonItem alloc] initWithTitle:@"Hide" style:UIBarButtonItemStyleBordered target:self action:@selector(actionHideKeyboard)];
+                UIBarButtonItem *flexibleSpace =[[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:nil action:nil];
+                
+                
+                [actionToolbar setItems:[NSArray arrayWithObjects:flexibleSpace,actionButton,nil] animated:YES];
                 self.commentTexView.inputAccessoryView= actionToolbar;
                 
                 [cell setSelectionStyle:UITableViewCellSelectionStyleNone];                               
@@ -273,21 +277,17 @@
 
 -(void)textViewDidBeginEditing:(UITextView *)textView {
     
-    self.detailsTableView.frame= CGRectMake(self.detailsTableView.frame.origin.x, self.detailsTableView.frame.origin.y, self.detailsTableView.frame.size.width, self.detailsTableView.frame.size.height - 230);
+    self.detailsTableView.frame= CGRectMake(self.detailsTableView.frame.origin.x, self.detailsTableView.frame.origin.y, self.detailsTableView.frame.size.width, self.detailsTableView.frame.size.height - 240);
     
     NSIndexPath *indexPath =[NSIndexPath indexPathForRow:0 inSection:1];
-    [self.detailsTableView scrollToRowAtIndexPath:indexPath atScrollPosition:UITableViewScrollPositionTop animated:YES];
+    [self.detailsTableView scrollToRowAtIndexPath:indexPath atScrollPosition:UITableViewScrollPositionBottom animated:NO];
     
 }
 
 
 -(void) textViewDidEndEditing:(UITextView *)textView {
     
-    self.detailsTableView.frame= CGRectMake(self.detailsTableView.frame.origin.x, self.detailsTableView.frame.origin.y, self.detailsTableView.frame.size.width, self.detailsTableView.frame.size.height + 230);
-    
-    NSIndexPath *indexPath =[NSIndexPath indexPathForRow:0 inSection:1];
-    [self.detailsTableView scrollToRowAtIndexPath:indexPath atScrollPosition:UITableViewScrollPositionTop animated:YES];
-    
+    self.detailsTableView.frame= CGRectMake(self.detailsTableView.frame.origin.x, self.detailsTableView.frame.origin.y, self.detailsTableView.frame.size.width, self.detailsTableView.frame.size.height + 240);
 
 }
 
@@ -310,9 +310,12 @@
     }
     return result;
 }
-- (void) hideKeyboard{
+
+- (void) actionHideKeyboard{
+    
     self.placeInfo.comment = self.commentTableViewCell.commentTextView.text;
     [self.commentTexView resignFirstResponder];
+
 }
 /*
 #pragma mark - UIAlertViewDelegate

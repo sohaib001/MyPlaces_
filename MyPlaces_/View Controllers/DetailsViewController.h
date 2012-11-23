@@ -10,7 +10,6 @@
 #import "InputCell.h"
 #import "MultiLineInputCell.h"
 #import "CategoryViewController.h"
-#import "SaveDetails.h"
 #import "PlaceInfo.h"
 
 @interface DetailsViewController : UIViewController <UITableViewDataSource, UITableViewDelegate, CategoryDelegate,UITextFieldDelegate,UITextViewDelegate,UIAlertViewDelegate>

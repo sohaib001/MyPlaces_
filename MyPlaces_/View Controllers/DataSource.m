@@ -30,6 +30,8 @@
         [self makePlistFile];
         self.plistDictionary = [[NSMutableDictionary alloc] initWithContentsOfFile:self.plistLocation];
         [self addCategoryNamesFromDictionaryToArray];
+        
+        
     }
     return self;
 }
@@ -57,6 +59,45 @@
     
 }
 
+
+- (void) addANewCategory:(NSString *) category{
+
+    [self.plistDictionary setObject:[NSMutableArray arrayWithObjects:nil]forKey:category];
+    [self.plistDictionary writeToFile:self.plistLocation atomically:YES];
+}
+
+- (void) removeACateogry:(NSString *) cateogry{
+    
+}
+
+
+
+- (void) addPlaceDetails:(NSDictionary *)details InACategory:(NSString *)category{
+    
+    
+    NSMutableArray *categoryDetails;
+    
+    categoryDetails = [self.plistDictionary objectForKey:category];
+    
+    
+    [categoryDetails addObject:details];
+    
+    [self.plistDictionary setObject:categoryDetails forKey:category];
+    
+    
+    BOOL fileSuccessfullyWritten = NO;
+    
+    fileSuccessfullyWritten = [self.plistDictionary writeToFile:self.plistLocation atomically:YES];
+    if (!fileSuccessfullyWritten) {
+        NSLog(@"%s", "fileNotWrittenSuccessfully");
+    } 
+ 
+}
+
+
+- (void) removePlaceDetailsInACategory:(NSString *)category{
+    
+}
 
 - (NSDictionary *) listOfCategories{
 
