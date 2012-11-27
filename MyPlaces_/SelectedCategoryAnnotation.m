@@ -11,8 +11,8 @@
 @implementation SelectedCategoryAnnotation
 
 @synthesize coordinates = _coordinates;
-@synthesize annotationTitle = annotationTitle;
-
+@synthesize annotationTitle = _annotationTitle;
+@synthesize annotationCategory = _annotationCategory;
 -(CLLocationCoordinate2D)coordinate
 {
 

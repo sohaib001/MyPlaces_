@@ -26,11 +26,13 @@
 @property (strong, nonatomic) NSMutableArray *alreadySelectedCategoryToShowPlaceOnMap;
 
 - (void)addDetails;
+- (void)editDetails;
 - (void)showPlacesOfSelectedCategory;
 - (void)makeCategorySelectionView;
 - (void)addAnnotationsToSelectedCategoryToShowPlacesOnMap;
 - (BOOL)isSelectedCategoryToShowPlacesOnMap;
 - (void)addToolbarOnCategoryActionSheet;
+- (void)removeAlreadySelectedCategoryAnnotations;
 @end
 
 @implementation MapViewController
@@ -68,12 +70,6 @@
     [super viewDidLoad];
     
     
-    
-    
-    [self makeCategorySelectionView];
-   
-    
-    
     UIBarButtonItem *showAllCategoriesButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemOrganize target:self action:@selector(showAllCategories:)];
     [self.navigationItem setRightBarButtonItem:showAllCategoriesButton];
     self.navigationItem.rightBarButtonItem.enabled = YES;
@@ -96,10 +92,15 @@
     
 }
 
+- (void)viewDidDisappear:(BOOL)animated{
+    [super viewDidDisappear:animated];
+    self.alreadySelectedCategoryToShowPlaceOnMap = nil ;
+    self.categoryToShowPlaceOnMap = nil;                                               
+}
 
 
 - (void)showAllCategories:(id)sender{
-    
+    [self removeAlreadySelectedCategoryAnnotations];
     AllCategoriesViewController *allCategoriesController =[[AllCategoriesViewController alloc] init];  
     allCategoriesController.modalTransitionStyle = UIModalTransitionStyleFlipHorizontal;  
   
@@ -121,7 +122,7 @@
             CLLocationCoordinate2D touchMapCoordinate = 
             [self.mapView convertPoint:touchPoint toCoordinateFromView:self.mapView];
         
-           
+            self.placeInfo.Coordinate = touchMapCoordinate;
             [self.mapView removeAnnotation:self.defaultAnnotation];
             
             [self.defaultAnnotation setCoordinates:touchMapCoordinate];
@@ -165,7 +166,9 @@
     [super viewDidAppear:animated];
     self.placeInfo = [[PlaceInfo alloc] init];
     self.dataSource = [[DataSource alloc] init];
-    self.mapView.showsUserLocation = YES;  
+    self.mapView.showsUserLocation = YES; 
+    
+    
 }
 
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation
@@ -179,7 +182,7 @@
 {
     
     [self setPlaceInfo:nil];
-    
+    [self setCategoryActionSheet:nil];
 }
 
 
@@ -187,12 +190,30 @@
 
 - (void)addDetails
 {
+    
+    [self removeAlreadySelectedCategoryAnnotations];
     DetailsViewController *detailsViewController = [[DetailsViewController alloc] init];
     
     detailsViewController.placeInfo = self.placeInfo;
   
-    self.categoryToShowPlaceOnMap = nil;
+    
+    
     [self.navigationController pushViewController:detailsViewController animated:YES];;
+}
+
+- (void)editDetails
+{
+    [self removeAlreadySelectedCategoryAnnotations];
+    DetailsViewController *editDetailsViewController = [[DetailsViewController alloc] init];
+    
+    editDetailsViewController.delegate = self;
+    [self isEditingEnabled];
+
+    editDetailsViewController.placeInfo = self.placeInfo;
+    
+ 
+    
+    [self.navigationController pushViewController:editDetailsViewController animated:YES];;
 }
 
 #pragma mark - MKMapViewDelegate
@@ -235,61 +256,90 @@
             customPinView = [[MKPinAnnotationView alloc] initWithAnnotation:annotation reuseIdentifier:reuseId];
             customPinView.canShowCallout = YES;
             customPinView.pinColor = MKPinAnnotationColorPurple;
+            
         }
         else
         {
             customPinView.annotation = annotation;
         }
 
-        
+        customPinView.rightCalloutAccessoryView = [UIButton buttonWithType:UIButtonTypeDetailDisclosure];
+        customPinView.rightCalloutAccessoryView.tag = 2; 
     }
     else
     {
-        static NSString *reuseId = @"DefaultAnnotationPin";
-      customPinView = (MKPinAnnotationView *)[mapView dequeueReusableAnnotationViewWithIdentifier:reuseId];
-        if (customPinView == nil)
-        {
-            customPinView = [[MKPinAnnotationView alloc] initWithAnnotation:annotation reuseIdentifier:reuseId];
+        static NSString *DefaultAnnotationId = @"DefaultAnnotationPin";
+      customPinView = (MKPinAnnotationView *)[mapView dequeueReusableAnnotationViewWithIdentifier:DefaultAnnotationId];
+        
+        if (customPinView == nil){
+        
+            customPinView = [[MKPinAnnotationView alloc] initWithAnnotation:annotation reuseIdentifier:DefaultAnnotationId];
             customPinView.draggable = YES;
             customPinView.canShowCallout = YES;
-        }
-        else
+        
+        }else
         {
             customPinView.annotation = annotation;
+           
         }
 
-        
+        customPinView.rightCalloutAccessoryView = [UIButton buttonWithType:UIButtonTypeDetailDisclosure];
+        customPinView.rightCalloutAccessoryView.tag = 1; 
+ 
     }
        
-    customPinView.rightCalloutAccessoryView = [UIButton buttonWithType:UIButtonTypeDetailDisclosure];
-      
+    
+    
     return  customPinView;
 }
 - (void)mapView:(MKMapView *)mapView annotationView:(MKAnnotationView *)view calloutAccessoryControlTapped:(UIControl *)control{
     
-    [self addDetails];
+    
+    if (view.rightCalloutAccessoryView.tag == 1) {
+       
+        [self addDetails];
+    }
+    else if (view.rightCalloutAccessoryView.tag == 2){
+        
+        
+        CLLocationCoordinate2D  coordinate;
+        coordinate = [view.annotation coordinate];
+        
+        int index =[[mapView annotations] indexOfObject:view.annotation];
+        
+        SelectedCategoryAnnotation *annotation =[[mapView annotations] objectAtIndex:index];
+        
+        NSDictionary *details;
+        details =[self.dataSource detailsOfAPlaceNameAtCoordinate:coordinate inACategory:annotation.annotationCategory];
+    
+        self.placeInfo.placeName = [details objectForKey:@"Place Name"];
+        self.placeInfo.comment = [details objectForKey:@"Comments"];
+        self.placeInfo.Coordinate = coordinate;
+        self.placeInfo.category = annotation.annotationCategory;
+        self.placeInfo.previousCategory = annotation.annotationCategory;
+        self.placeInfo.identifier =  [self.dataSource indexOfAPlaceNameAtCoordinate:coordinate inACategory:annotation.annotationCategory];
+        
+        [self editDetails];
+    }
+
+    
 }
 
 
 - (void)showPlacesOfSelectedCategory{
-    
-   
-        if (self.alreadySelectedCategoryToShowPlaceOnMap == nil) {
+    if (self.alreadySelectedCategoryToShowPlaceOnMap == nil){
+        self.alreadySelectedCategoryToShowPlaceOnMap = [[NSMutableArray alloc] initWithCapacity:0];
         
-            self.alreadySelectedCategoryToShowPlaceOnMap = [[NSMutableArray alloc] initWithCapacity:0];
+    }
+      
+        if (!self.isSelectedCategoryToShowPlacesOnMap && [self.dataSource totalNumberOfPlacesOfACategory:self.categoryToShowPlaceOnMap] > 0) {
+            
             [self.alreadySelectedCategoryToShowPlaceOnMap addObject:self.categoryToShowPlaceOnMap];
             [self addAnnotationsToSelectedCategoryToShowPlacesOnMap];
+        } 
         
-        }else{
+       
 
-            if  (!self.isSelectedCategoryToShowPlacesOnMap) {
-                
-                [self.alreadySelectedCategoryToShowPlaceOnMap addObject:self.categoryToShowPlaceOnMap];
-                [self addAnnotationsToSelectedCategoryToShowPlacesOnMap];
-            
-            }
-        }
-        
 }
 
 - (BOOL)isSelectedCategoryToShowPlacesOnMap{
@@ -299,39 +349,38 @@
     [self.alreadySelectedCategoryToShowPlaceOnMap enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
         if ([obj isEqualToString:self.categoryToShowPlaceOnMap]) {
             result = YES;
+            *stop = YES;
         }
     } ];
     
     return result;
 }
 - (void) addAnnotationsToSelectedCategoryToShowPlacesOnMap{
+   
     NSArray * categoryDetails;
     categoryDetails = [self.dataSource listOfPlacesOfACategory:self.categoryToShowPlaceOnMap];
     
-    
-    for (NSDictionary * detail in categoryDetails) {
-        
-        
-        NSString * placeName =[detail objectForKey:@"Place Name"];
+    [categoryDetails enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
+       
+        NSString * placeName =[obj objectForKey:@"Place Name"];
         
         CLLocationCoordinate2D  currentLocationCoordinates;
         currentLocationCoordinates.latitude = 
-        [[detail objectForKey:@"Latitude"] doubleValue];
+        [[obj objectForKey:@"Latitude"] doubleValue];
         currentLocationCoordinates.longitude =
-        [[detail objectForKey:@"Logitude"] doubleValue]; 
+        [[obj objectForKey:@"Logitude"] doubleValue]; 
         
         SelectedCategoryAnnotation *annotation = [[SelectedCategoryAnnotation alloc] init];
         [annotation setAnnotationTitle:placeName];
         [annotation setCoordinates:currentLocationCoordinates];
+        [annotation setAnnotationCategory:self.categoryToShowPlaceOnMap];
         [self.mapView addAnnotation:annotation];
-    }
+    }];
 
 }
 
 - (IBAction)addDefaultAnnotation:(UIButton *)sender {
     
-    
-        
         CLLocationCoordinate2D currentLocationCoordinates;
         
         currentLocationCoordinates = [[self.mapView userLocation]  coordinate];
@@ -368,14 +417,15 @@
 
 - (IBAction)didSelectCategoryTapped:(UIButton *)sender
 {
-    
+    [self makeCategorySelectionView];
     [self.categoryActionSheet showInView:self.view];
     [self.categoryActionSheet setFrame:CGRectMake(0, 156, 320, 260)];
     [self addToolbarOnCategoryActionSheet];
     
 }
 
-- (void) addToolbarOnCategoryActionSheet{
+- (void)addToolbarOnCategoryActionSheet{
+    
     UIToolbar * actionToolbar = [[UIToolbar alloc] initWithFrame:CGRectMake(0, 0, 320, 30)];
     
     UIBarButtonItem *cancelButton = [[UIBarButtonItem alloc] initWithTitle:@"Cancel" style:UIBarButtonItemStyleBordered target:self action:@selector(actionCancel)];
@@ -405,10 +455,19 @@
 
 - (void)actionOK
 {
+    NSArray *categoryActionSheetSubViews;
     
+    categoryActionSheetSubViews = [self.categoryActionSheet subviews];
+    
+    NSInteger row = [[categoryActionSheetSubViews objectAtIndex:0] selectedRowInComponent:0];
+    
+    NSArray * categoryNames ;
+    
+    categoryNames = [self.dataSource categoryNames];
+    self.categoryToShowPlaceOnMap = [categoryNames objectAtIndex:row];
+   
     [self showPlacesOfSelectedCategory];
     [self.categoryActionSheet dismissWithClickedButtonIndex:0 animated:YES];
-   
 }
 
 
@@ -423,16 +482,6 @@
     
 }
 
-- (void)pickerView:(UIPickerView *)pickerView didSelectRow:(NSInteger)row inComponent:(NSInteger)component{
-    
-    NSArray * categoryNames ;
-    categoryNames = [self.dataSource categoryNames];
-    
-    self.categoryToShowPlaceOnMap = [categoryNames objectAtIndex:row];
-    
-    
-}
-
 
 #pragma mark - UIPickerViewDataSource
 
@@ -443,12 +492,32 @@
 
 }
 
--(NSInteger)pickerView:(UIPickerView *)pickerView numberOfRowsInComponent:(NSInteger)component{
+-(NSInteger)pickerView:(UIPickerView *)pickerView numberOfRowsInComponent:(NSInteger)component
+{
     
     NSUInteger numberOfRows = 0;
+    
     numberOfRows = [self.dataSource totalNumberOfCategories];
     
     return numberOfRows;
 }
+#pragma mark - DetailsViewControllerDelegate
 
+-(BOOL)isEditingEnabled{
+    return YES;
+}
+
+
+
+- (void)removeAlreadySelectedCategoryAnnotations{
+    
+    NSArray *allAnnotations;
+    allAnnotations = [self.mapView annotations];
+    
+    [allAnnotations enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
+        if([obj isKindOfClass:[SelectedCategoryAnnotation class]]){
+            [self.mapView removeAnnotation:obj];
+        }
+    }];
+}
 @end

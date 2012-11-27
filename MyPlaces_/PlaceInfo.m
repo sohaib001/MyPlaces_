@@ -15,7 +15,7 @@
 @synthesize category = _category;
 @synthesize Coordinate ;
 @synthesize identifier = _identifier;
-
+@synthesize previousCategory = _previousCategory;
 
 
 

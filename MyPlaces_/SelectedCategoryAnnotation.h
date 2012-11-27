@@ -11,5 +11,5 @@
 @interface SelectedCategoryAnnotation : NSObject<MKAnnotation>
 @property CLLocationCoordinate2D coordinates;
 @property (strong, nonatomic) NSString * annotationTitle;
-
+@property (strong, nonatomic) NSString * annotationCategory;
 @end

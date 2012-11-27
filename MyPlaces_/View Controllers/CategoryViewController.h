@@ -18,13 +18,11 @@
 
 @interface CategoryViewController : UIViewController 
 
+@property (strong, nonatomic) NSString *selectedCategory;
+@property (strong, nonatomic) PlaceInfo *placeInfo;
 @property (assign) id<CategoryDelegate> delegate;
-
 @property (strong, nonatomic) IBOutlet UIPickerView *chooseCategoryPickerView;
 
-@property (strong, nonatomic) NSString *selectedCategory;
-
-@property (strong, nonatomic) PlaceInfo *placeInfo;
 
 
 @end

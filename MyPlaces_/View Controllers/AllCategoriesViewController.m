@@ -43,7 +43,8 @@
   
     [self.editCategoriesButton setTarget:self];
     [self.editCategoriesButton setAction:@selector(editCategories)];
-    self.editCategoriesButton.enabled = YES;
+    self.editCategoriesButton.enabled = NO;
+   
 
 
     [self.showMapButton setTarget:self];
@@ -61,14 +62,17 @@
 - (void)editCategories
 {
 
-    if (self.AllCategoriesTableView.editing) {
+    if ( [self.dataSource totalNumberOfPlaces] > 0 && self.editCategoriesButton.tag == 1 ) {
+        
+        [self.AllCategoriesTableView setEditing:YES 
+         
+                                       animated:YES];
+        self.editCategoriesButton.tag = -1;
+    }else{
         
         [self.AllCategoriesTableView setEditing:NO 
                                        animated:YES];
-    }else{
-        
-        [self.AllCategoriesTableView setEditing:YES 
-                                       animated:YES];
+        self.editCategoriesButton.tag = 1;
     }
 }
 
@@ -77,20 +81,30 @@
     [self setEditCategoriesButton:nil];
     [self setShowMapButton:nil];
     [self setAllCategoriesTableView:nil];
+   
     [super viewDidUnload];
 }
 
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation
 {
+    
     return (interfaceOrientation == UIInterfaceOrientationPortrait);
+
 }
 
 - (void)viewWillAppear:(BOOL)animated
 {
     
     [super viewWillAppear:animated];
+    
     self.dataSource = [[DataSource alloc] init];
-
+    
+    if ([self.dataSource totalNumberOfPlaces] > 0  ) {
+    
+        self.editCategoriesButton.enabled = YES;
+        self.editCategoriesButton.tag = 1;
+    
+    }
 }
 
 #pragma mark - UITableViewDataSource
@@ -121,33 +135,43 @@
 
 
 -(BOOL)tableView:(UITableView *)tableView canEditRowAtIndexPath:(NSIndexPath *)indexPath{
+    
     return YES;
 }
 
-/*
+
 -(void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath{
-    
-}
 
--(void)tableView:(UITableView *)tableView didEndEditingRowAtIndexPath:(NSIndexPath *)indexPath {
-    
-}
+    NSString * categoryName =  [self.dataSource.categoryNames objectAtIndex:indexPath.section];
+  
+    if (editingStyle == UITableViewCellEditingStyleDelete)
+    {
+        
+        [self.dataSource removePlaceDetailsInACategory:categoryName AtcategoryDetailIndex:indexPath.row];
+        
+    }
 
--(BOOL)tableView:(UITableView *)tableView shouldIndentWhileEditingRowAtIndexPath:(NSIndexPath *)indexPath {
+    [tableView deleteRowsAtIndexPaths:[NSArray arrayWithObject:indexPath] withRowAnimation:UITableViewRowAnimationFade];
     
+    if ([self.dataSource totalNumberOfPlaces]  == 0 ) {
+        
+        self.editCategoriesButton.enabled = NO;
+    
+    }
+   
+
 }
 
 -(UITableViewCellEditingStyle)tableView:(UITableView *)tableView editingStyleForRowAtIndexPath:(NSIndexPath *)indexPath{
     
-    
+    return UITableViewCellEditingStyleDelete;
 }
-*/
+
+
 -(UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath 
 {
         
     UITableViewCell *cell;
-    
-    
     
     NSString *category;
     NSString *placeName;
@@ -157,6 +181,7 @@
     placeName = [self.dataSource placeNameOfACategory:category AtcategoryDetailIndex:indexPath.row];
     
     NSString *cellIdentifier = category;
+    
     cell = [tableView dequeueReusableCellWithIdentifier:cellIdentifier];
     
     if (cell== nil) {
@@ -167,34 +192,5 @@
     
     return cell;
 }
-
-/*
-#pragma mark - UITableViewDelegate
-
--(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
-{
-    
-    [tableView deselectRowAtIndexPath:indexPath animated:YES];
-    CategoryViewController *categoryViewController = [[CategoryViewController alloc] init];
-    categoryViewController.delegate =self;
-    categoryViewController.placeInfo = self.placeInfo;
-    if (indexPath.row == 1 && indexPath.section == 0) {
-        [self.navigationController pushViewController:categoryViewController animated:YES];
-    }
-    
-}
-
--(CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath{
-    
-    if (indexPath.row == 0 && indexPath.section == 1 ) {
-        return 159;
-    }else{
-        return 44;
-    }
-}
-
-
-*/
-
 
 @end

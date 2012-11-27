@@ -17,4 +17,5 @@
 @property (strong, nonatomic) NSString *comment;
 @property  NSUInteger identifier ;
 @property CLLocationCoordinate2D Coordinate;
+@property (strong, nonatomic) NSString *previousCategory;
 @end

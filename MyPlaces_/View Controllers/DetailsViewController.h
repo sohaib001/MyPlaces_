@@ -12,18 +12,22 @@
 #import "CategoryViewController.h"
 #import "PlaceInfo.h"
 
+@protocol DetailsViewControllerDelegate <NSObject>
+
+- (BOOL)isEditingEnabled;
+
+@end
+
 @interface DetailsViewController : UIViewController <UITableViewDataSource, UITableViewDelegate, CategoryDelegate,UITextFieldDelegate,UITextViewDelegate,UIAlertViewDelegate>
+
+@property (assign) id<DetailsViewControllerDelegate> delegate;
 
 @property (strong, nonatomic) PlaceInfo *placeInfo;
 @property (strong, nonatomic) UITextField *placeNameTextField; 
 @property (strong, nonatomic) UITextView *commentTexView;
-@property (strong, nonatomic) NSString *category;
-
 
 @property (strong, nonatomic) IBOutlet UITableView *detailsTableView;
-
 @property (strong, nonatomic) IBOutlet InputCell *placeNameTableViewCell;
-
 @property (strong, nonatomic) IBOutlet MultiLineInputCell *commentTableViewCell;
 
 @end

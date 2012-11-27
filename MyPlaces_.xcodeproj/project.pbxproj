@@ -25,8 +25,8 @@
 		E67C0EF9164BD1B000E9BE16 /* CategoryViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = E67C0EF7164BD1B000E9BE16 /* CategoryViewController.xib */; };
 		E6A3CFCB165137BF00EBAA92 /* PlaceInfo.m in Sources */ = {isa = PBXBuildFile; fileRef = E6A3CFCA165137BF00EBAA92 /* PlaceInfo.m */; };
 		E6A604E6165E1358006C49B0 /* Details.plist in Resources */ = {isa = PBXBuildFile; fileRef = E6A604E5165E1358006C49B0 /* Details.plist */; };
-		E6BC45CE165A50D7008D007A /* DataSource.m in Sources */ = {isa = PBXBuildFile; fileRef = E6BC45CD165A50D6008D007A /* DataSource.m */; };
 		E6C2F9F81655381F00EB28A5 /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E6C2F9F71655381F00EB28A5 /* QuartzCore.framework */; };
+		E6CCDEDA16637D0F00BF7F01 /* DataSource.m in Sources */ = {isa = PBXBuildFile; fileRef = E6CCDED916637D0F00BF7F01 /* DataSource.m */; };
 		E6E2F3CE165CB64E00E6A058 /* Arrow-Down.png in Resources */ = {isa = PBXBuildFile; fileRef = E6E2F3CD165CB64E00E6A058 /* Arrow-Down.png */; };
 		E6E8BBE3165CD2290088CB06 /* pinRed.png in Resources */ = {isa = PBXBuildFile; fileRef = E6E8BBE2165CD2290088CB06 /* pinRed.png */; };
 		E6E8BBE8165D1C1D0088CB06 /* AllCategoriesViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E6E8BBE6165D1C160088CB06 /* AllCategoriesViewController.m */; };
@@ -63,10 +63,10 @@
 		E6A3CFC9165137BF00EBAA92 /* PlaceInfo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PlaceInfo.h; sourceTree = "<group>"; };
 		E6A3CFCA165137BF00EBAA92 /* PlaceInfo.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PlaceInfo.m; sourceTree = "<group>"; };
 		E6A604E5165E1358006C49B0 /* Details.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Details.plist; sourceTree = "<group>"; };
-		E6BC45CC165A50D5008D007A /* DataSource.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DataSource.h; sourceTree = "<group>"; };
-		E6BC45CD165A50D6008D007A /* DataSource.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DataSource.m; sourceTree = "<group>"; };
 		E6C2F9F61655224300EB28A5 /* DetailsViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DetailsViewController.h; sourceTree = "<group>"; };
 		E6C2F9F71655381F00EB28A5 /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
+		E6CCDED816637D0F00BF7F01 /* DataSource.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DataSource.h; sourceTree = "<group>"; };
+		E6CCDED916637D0F00BF7F01 /* DataSource.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DataSource.m; sourceTree = "<group>"; };
 		E6E2F3CD165CB64E00E6A058 /* Arrow-Down.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Arrow-Down.png"; sourceTree = "<group>"; };
 		E6E8BBE2165CD2290088CB06 /* pinRed.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = pinRed.png; sourceTree = "<group>"; };
 		E6E8BBE5165D1C160088CB06 /* AllCategoriesViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AllCategoriesViewController.h; sourceTree = "<group>"; };
@@ -139,6 +139,8 @@
 				E67C0EF1164BB2E000E9BE16 /* MultiLineInputCell.m */,
 				E6A3CFC9165137BF00EBAA92 /* PlaceInfo.h */,
 				E6A3CFCA165137BF00EBAA92 /* PlaceInfo.m */,
+				E6CCDED816637D0F00BF7F01 /* DataSource.h */,
+				E6CCDED916637D0F00BF7F01 /* DataSource.m */,
 			);
 			path = MyPlaces_;
 			sourceTree = "<group>";
@@ -166,8 +168,6 @@
 				E67C0EF5164BD1B000E9BE16 /* CategoryViewController.h */,
 				E67C0EF6164BD1B000E9BE16 /* CategoryViewController.m */,
 				E67C0EF7164BD1B000E9BE16 /* CategoryViewController.xib */,
-				E6BC45CC165A50D5008D007A /* DataSource.h */,
-				E6BC45CD165A50D6008D007A /* DataSource.m */,
 				E6E8BBE5165D1C160088CB06 /* AllCategoriesViewController.h */,
 				E6E8BBE6165D1C160088CB06 /* AllCategoriesViewController.m */,
 				E6E8BBE7165D1C190088CB06 /* AllCategoriesViewController.xib */,
@@ -262,9 +262,9 @@
 				E67C0EF2164BB2E000E9BE16 /* MultiLineInputCell.m in Sources */,
 				E67C0EF8164BD1B000E9BE16 /* CategoryViewController.m in Sources */,
 				E6A3CFCB165137BF00EBAA92 /* PlaceInfo.m in Sources */,
-				E6BC45CE165A50D7008D007A /* DataSource.m in Sources */,
 				E6F25257165B5A12003284B1 /* SelectedCategoryAnnotation.m in Sources */,
 				E6E8BBE8165D1C1D0088CB06 /* AllCategoriesViewController.m in Sources */,
+				E6CCDEDA16637D0F00BF7F01 /* DataSource.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

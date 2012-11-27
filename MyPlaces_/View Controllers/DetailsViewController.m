@@ -14,18 +14,21 @@
 //- (void)addPlaceNameCell:(UITableViewCell *)cell;
 //- (void)addCommentCell:(UITableViewCell *)cell;
 //- (void)addCategoryCell:(UITableViewCell *)cell;
+- (void)addButtonInNavigationBar;
 - (void)addSaveButton;
+- (void)addEditButton;
 - (BOOL)isCategorySelected;
--(BOOL) isPlaceNameFill;
+- (BOOL)isPlaceNameFill;
+
 @end
 
 @implementation DetailsViewController
 
-@synthesize category = _category;
+
 @synthesize placeInfo = _placeInfo;
 @synthesize placeNameTableViewCell = _placeNameTableViewCell;
 @synthesize commentTableViewCell = _commentTableViewCell;
-
+@synthesize delegate = _delegate;
 
 @synthesize detailsTableView = _addDetailsTableView;
 @synthesize commentTexView = _commentTexView;
@@ -36,32 +39,28 @@
 {
     self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
     if (self) {
-        // Custom initialization
     }
     return self;
 }
 
 - (void)didReceiveMemoryWarning
 {
-    // Releases the view if it doesn't have a superview.
     [super didReceiveMemoryWarning];
     
-    // Release any cached data, images, etc that aren't in use.
 }
 
 #pragma mark - View lifecycle
 
 - (void)viewDidLoad
 {
-    
     [super viewDidLoad];
-    // Do any additional setup after loading the view from its nib.
-    [self addSaveButton];
+    [self addButtonInNavigationBar];
 }
 
 - (void)viewWillAppear:(BOOL)animated
 {
     [super viewWillAppear:YES];
+   
 }
 - (void)viewDidUnload
 {
@@ -70,19 +69,17 @@
     [self setPlaceNameTableViewCell:nil];
     [self setCommentTableViewCell:nil];
     [super viewDidUnload];
-    // Release any retained subviews of the main view.
-    // e.g. self.myOutlet = nil;
+ 
 }
 
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation
 {
-    // Return YES for supported orientations
     return (interfaceOrientation == UIInterfaceOrientationPortrait);
 }
 
 - (void)dealloc
 {
-    [self setCategory:nil];
+
     [self setPlaceInfo:nil];
     [self setDetailsTableView:nil];
     [self setCommentTexView:nil];
@@ -90,11 +87,38 @@
     
 }
 
--(void)addSaveButton{
+-(void)addButtonInNavigationBar{
+    
+   
+    
+    if ([self.delegate isEditingEnabled]) {
+        
+        [self addEditButton];
+    }
+    else{
+        [self addSaveButton];
+    }
+
+}
+
+- (void) addSaveButton{
     
     UIBarButtonItem	*saveButton = [[UIBarButtonItem alloc] initWithTitle:@"Save" style:UIBarButtonItemStylePlain target:self action:@selector(saveDetailsToFile)];
     self.navigationItem.rightBarButtonItem = saveButton;
     self.navigationItem.rightBarButtonItem.enabled = YES;
+
+}
+- (void)addEditButton{
+    
+    UIBarButtonItem	*editButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemEdit target:self action:@selector(editDetails)];
+    self.navigationItem.rightBarButtonItem = editButton;
+    self.navigationItem.rightBarButtonItem.enabled = YES;
+    self.detailsTableView.userInteractionEnabled = NO;
+}
+- (void)editDetails{
+    
+    self.detailsTableView.userInteractionEnabled = YES;
+    [self addSaveButton];
 }
 
 - (void)saveDetailsToFile
@@ -109,8 +133,13 @@
         
     NSMutableDictionary *details = [[ NSMutableDictionary alloc] init];
     
-    [details setObject:self.placeNameTableViewCell.placeNameTextField.text  forKey:@"Place Name"];
-    [details setObject:self.commentTableViewCell.commentTextView.text forKey:@"Comments"];
+        
+    [details setObject:self.placeInfo.placeName forKey:@"Place Name"];
+    
+        if (self.placeInfo.comment !=nil ){
+             [details setObject:self.placeInfo.comment forKey:@"Comments"];
+        }
+   
    
     NSNumber * latitude = [NSNumber numberWithFloat:self.placeInfo.Coordinate.latitude];
     NSNumber * longitude = [NSNumber numberWithFloat:self.placeInfo.Coordinate.longitude];
@@ -119,11 +148,21 @@
     [details setObject:latitude forKey:@"Latitude"];
     [details setObject:longitude forKey:@"Logitude"];
   
-    
-  
     DataSource *dataSource   = [[DataSource alloc] init];
     
-    [dataSource addPlaceDetails:details InACategory:self.category];
+    if ([self.delegate isEditingEnabled]) 
+    {
+        
+        [details setObject:self.placeInfo.previousCategory forKey:@"Previous Category"];
+        [details setObject:[NSNumber numberWithUnsignedInteger: self.placeInfo.identifier ]forKey:@"PlaceDetailsIndex"];
+        [dataSource editPlaceDetails:details withUpdateCategory:self.placeInfo.category];
+    
+    }else{
+       
+        [dataSource addPlaceDetails:details InACategory:self.placeInfo.category];
+    }
+    
+        
 
     [self.navigationController popViewControllerAnimated:YES];
 
@@ -133,11 +172,14 @@
 #pragma mark - UITableViewDataSource
 
 -(NSInteger)numberOfSectionsInTableView:(UITableView *)tableView{
+    
     return 2;
 }
 
 -(NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section{
+    
     int numberOfrows = 0;
+    
     if (section  == 0 ) {
         
         numberOfrows = 2;
@@ -156,8 +198,11 @@
     NSString *sectionHeader;
     
     if (section == 1) {
+    
         sectionHeader = @"Comment";
+    
     }
+    
     return sectionHeader;
 }
 
@@ -183,7 +228,10 @@
                 
                     [cell setSelectionStyle:UITableViewCellSelectionStyleNone];
                     //[self addPlaceNameCell:cell];
-                } 
+                }
+                
+             
+                
             }else{
                     
                     NSString *cellIdentifier = @"Category";
@@ -196,11 +244,11 @@
                         
                         cell.accessoryType=UITableViewCellAccessoryDisclosureIndicator;
                         //[self addCategoryCell:cell];
-                    }     
-                    cell.detailTextLabel.text = self.category;
+                        }  
+                        cell.detailTextLabel.text = self.placeInfo.category;
                 }
                 
-            }
+        }
         else{
             NSString *cellIdentifier=@"MultiLineInputCell";
             
@@ -231,6 +279,7 @@
     return cell;
 }
 
+
 #pragma mark - UITableViewDelegate
 
 -(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
@@ -241,8 +290,11 @@
     CategoryViewController *categoryViewController = [[CategoryViewController alloc] init];
     categoryViewController.delegate =self;
     categoryViewController.placeInfo = self.placeInfo;
+    
     if (indexPath.row == 1 && indexPath.section == 0) {
+    
         [self.navigationController pushViewController:categoryViewController animated:YES];
+    
     }
     
 }
@@ -260,9 +312,7 @@
 #pragma mark - CategoryDelegate
 
 -(void)didCategorySelect:(NSString *)categroy{
-    
 
-    self.category = categroy;
     self.placeInfo.category = categroy;
     [self.detailsTableView reloadData];
 }
@@ -295,7 +345,7 @@
     
     BOOL result=NO;
     
-    if (self.category!=nil ) {
+    if (self.placeInfo.category!=nil ) {
         result = YES;
     }
     return result;
